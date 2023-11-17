@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 
 class ContactBase(BaseModel):
@@ -17,6 +17,7 @@ class ContactBase(BaseModel):
     class Config:
         orm_mode = True
 
+
 class ContactResponse(BaseModel):
     id: int
     firstname: str
@@ -30,3 +31,25 @@ class ContactResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class UserBase(BaseModel):
+    username: str = Field(min_length=5, max_length=16)
+    email: EmailStr
+    password: str = Field(min_length=6, max_length=10)
+
+
+class UserResponse(BaseModel):
+    id: int = 1
+    username: str
+    email: str
+    avatar: str
+
+    class Config:
+        orm_mode = True
+
+
+class TokenModel(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
