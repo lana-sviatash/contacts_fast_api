@@ -1,3 +1,6 @@
+from typing import List
+import redis.asyncio as redis
+import uvicorn
 import time
 from pathlib import Path
 
@@ -10,7 +13,9 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from pydantic import EmailStr, BaseModel
-from typing import List
+
+from fastapi_limiter import FastAPILimiter
+from fastapi_limiter.depends import RateLimiter
 
 
 from src.database.db import get_db
@@ -45,6 +50,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.post("/send-email")
 async def send_in_background(background_tasks: BackgroundTasks, body: EmailSchema):
@@ -98,4 +104,17 @@ def healthchecker(db: Session = Depends(get_db)):
 app.include_router(contacts.router, prefix="/api")
 app.include_router(auth.router, prefix='/api')
 
+
+@app.on_event("startup")
+async def startup():
+    r = await redis.Redis(host='localhost', port=6379, db=0, encoding="utf-8", decode_responses=True)
+    await FastAPILimiter.init(r)
+
+
+@app.get("/")
+def read_root():
+    return {"msg": "Hello Friend"}
+
 # uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+# if __name__ == "__main__":
+#     uvicorn.run("app:app", reload=True)
