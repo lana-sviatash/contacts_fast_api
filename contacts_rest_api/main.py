@@ -1,19 +1,42 @@
 import time
+from pathlib import Path
 
-from fastapi import FastAPI, Depends, HTTPException, Request
+from fastapi import FastAPI, Depends, HTTPException, Request, BackgroundTasks
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig, MessageType
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from sqlalchemy import text
+from pydantic import EmailStr, BaseModel
+from typing import List
 
 
 from src.database.db import get_db
 from src.routes import contacts, auth
 
+class EmailSchema(BaseModel):
+    email: EmailStr
+
+
+conf = ConnectionConfig(
+    MAIL_USERNAME="lana-sv@meta.ua",
+    MAIL_PASSWORD="qwerTy@123",
+    MAIL_FROM="lana-sv@meta.ua",
+    MAIL_PORT=465,
+    MAIL_SERVER="smtp.meta.ua",
+    MAIL_FROM_NAME="Service",
+    MAIL_STARTTLS=False,
+    MAIL_SSL_TLS=True,
+    USE_CREDENTIALS=True,
+    VALIDATE_CERTS=True,
+    TEMPLATE_FOLDER=Path(__file__).parent / 'templates',
+)
+
 
 app = FastAPI()
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,6 +45,21 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.post("/send-email")
+async def send_in_background(background_tasks: BackgroundTasks, body: EmailSchema):
+    message = MessageSchema(
+        subject="Fastapi mail module",
+        recipients=[body.email],
+        template_body={"fullname": "Dear friend"},
+        subtype=MessageType.html
+    )
+
+    fm = FastMail(conf)
+
+    background_tasks.add_task(fm.send_message, message, template_name="example_email.html")
+
+    return {"message": "email has been sent"}
 
 @app.middleware("http")
 async def custom_middleware(request: Request, call_next):
