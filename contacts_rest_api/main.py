@@ -15,11 +15,10 @@ from sqlalchemy import text
 from pydantic import EmailStr, BaseModel
 
 from fastapi_limiter import FastAPILimiter
-from fastapi_limiter.depends import RateLimiter
 
 
 from src.database.db import get_db
-from src.routes import contacts, auth
+from src.routes import contacts, auth, users
 
 class EmailSchema(BaseModel):
     email: EmailStr
@@ -103,6 +102,7 @@ def healthchecker(db: Session = Depends(get_db)):
 
 app.include_router(contacts.router, prefix="/api")
 app.include_router(auth.router, prefix='/api')
+app.include_router(users.router, prefix='/api')
 
 
 @app.on_event("startup")
