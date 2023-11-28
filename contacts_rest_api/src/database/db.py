@@ -16,6 +16,13 @@ DBSession = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 # Dependency
 def get_db():
+    """
+    The get_db function is a context manager that will automatically close the database connection when it goes out of scope.
+    It also handles any exceptions that occur within the with block, rolling back any changes to the database and closing the connection before re-raising them.
+    
+    :return: A context manager, which is a python object that manages a resource
+    :doc-author: Trelent
+    """
     db = DBSession()
     try:
         yield db

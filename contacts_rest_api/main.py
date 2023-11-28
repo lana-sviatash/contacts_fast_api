@@ -53,6 +53,17 @@ app.add_middleware(
 
 @app.post("/send-email")
 async def send_in_background(background_tasks: BackgroundTasks, body: EmailSchema):
+    """
+    The send_in_background function Sends an email in the background.
+        ---
+        tags: [email]
+    
+    
+    :param background_tasks: BackgroundTasks: Add a task to the background
+    :param body: EmailSchema: Get the email address from the request body
+    :return: A dictionary with a message
+    :doc-author: Trelent
+    """
     message = MessageSchema(
         subject="Fastapi mail module",
         recipients=[body.email],
@@ -68,6 +79,15 @@ async def send_in_background(background_tasks: BackgroundTasks, body: EmailSchem
 
 @app.middleware("http")
 async def custom_middleware(request: Request, call_next):
+    """
+    The custom_middleware function is a middleware function that adds the time it took to process the request
+    to the response headers. This can be used for performance monitoring.
+    
+    :param request: Request: Access the request object
+    :param call_next: Call the next middleware in the chain
+    :return: A response object
+    :doc-author: Trelent
+    """
     start_time = time.time()
     response = await call_next(request)
     during = time.time() - start_time
@@ -81,6 +101,16 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/", response_class=HTMLResponse, description="Main Page")
 async def root(request: Request):
+    """
+    The root function is the entry point for the web application.
+    It returns a TemplateResponse object, which renders an HTML template
+    (index.html) with some context variables (title). The title variable is set to &quot;Contacts App&quot;.
+    
+    
+    :param request: Request: Pass the request object to the template
+    :return: A templateresponse object
+    :doc-author: Trelent
+    """
     return templates.TemplateResponse(
         "index.html", {"request": request, "title": "Contacts App"}
     )
@@ -107,12 +137,26 @@ app.include_router(users.router, prefix='/api')
 
 @app.on_event("startup")
 async def startup():
+    """
+    The startup function is called when the application starts up.
+    It's a good place to initialize things that are needed by your app, like database connections or caches.
+    
+    :return: A dictionary with the name of the class and an instance
+    :doc-author: Trelent
+    """
     r = await redis.Redis(host='localhost', port=6379, db=0, encoding="utf-8", decode_responses=True)
     await FastAPILimiter.init(r)
 
 
 @app.get("/")
 def read_root():
+    """
+    The read_root function returns a dictionary with the key &quot;msg&quot; and value &quot;Hello Friend&quot;.
+    
+    
+    :return: A dict object
+    :doc-author: Trelent
+    """
     return {"msg": "Hello Friend"}
 
 # uvicorn main:app --host 127.0.0.1 --port 8000 --reload

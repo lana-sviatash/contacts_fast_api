@@ -26,7 +26,11 @@ redis = "^5.0.1"
 python-dotenv = "^1.0.0"
 fastapi-limiter = "0.1.4"
 cloudinary = "^1.36.0"
+pydantic-settings = "^2.1.0"
 
+
+[tool.poetry.group.dev.dependencies]
+sphinx = "^7.2.6"
 
 [build-system]
 requires = ["poetry-core"]
