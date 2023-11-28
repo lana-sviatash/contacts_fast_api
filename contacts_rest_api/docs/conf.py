@@ -9,7 +9,7 @@ import sys
 import os
 
 sys.path.append(os.path.abspath('..'))
-project = 'REST API'
+project = 'Contacts REST API'
 copyright = '2023, lana-sviatash'
 author = 'lana-sviatash'
 
