@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Welcome to Contacts REST API's documentation!
-====================================
+=============================================
 
 .. toctree::
    :maxdepth: 2
