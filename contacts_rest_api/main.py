@@ -96,7 +96,8 @@ async def custom_middleware(request: Request, call_next):
 
 
 templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+BASE_DIR = Path(__file__).parent
+app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
 
 @app.get("/", response_class=HTMLResponse, description="Main Page")

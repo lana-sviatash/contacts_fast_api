@@ -17,7 +17,7 @@ async def create(body: ContactBase, db: Session, user: User):
     :return: A contact object
     :doc-author: Trelent
     """
-    contact = Contact(**body.model_dump(), user_id=user.id)
+    contact = Contact(**body, user_id=user.id)
     db.add(contact)
     db.commit()
     db.refresh(contact)
@@ -36,7 +36,7 @@ async def update(id: int, body: ContactBase, user_id: int, db: Session):
     :return: A contact object
     :doc-author: Trelent
     """
-    contact = await get_contact_by_id(id, db)
+    contact = await get_contact_by_id(id, user_id, db)
     if contact and contact.user_id == user_id:
         contact.email = body.email
         contact.additional_data = body.additional_details
@@ -56,7 +56,7 @@ async def remove(id: int, user_id: int, db: Session):
     :return: The contact that was deleted
     :doc-author: Trelent
     """
-    contact = await get_contact_by_id(id, db)
+    contact = await get_contact_by_id(id, user_id, db)
     if contact and contact.user_id == user_id:
         db.delete(contact)
         db.commit()
@@ -192,7 +192,7 @@ async def get_birthdays(start_date: date, end_date: date, db: Session, user: Use
     """
     birthdays = (
         db.query(Contact)
-        .filter(Contact.birth >= start_date, Contact.birth_date <= end_date, Contact.user_id == user.id)
+        .filter(Contact.birth >= start_date, Contact.birth <= end_date, Contact.user_id == user.id)
         .all()
     )
     return birthdays

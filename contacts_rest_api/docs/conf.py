@@ -3,7 +3,7 @@ import os
 
 sys.path.append(os.path.abspath('..'))
 # List of modules to mock
-autodoc_mock_imports = ['main', 'src.routes.contacts', 'src.routes.users', 'src.routes.auth', 'src.services.auth', 'src.services.email']
+# autodoc_mock_imports = ['main', 'src.routes.contacts', 'src.routes.users', 'src.routes.auth', 'src.services.auth', 'src.services.email']
 
 project = 'Contacts REST API'
 copyright = '2023, lana-sviatash'
