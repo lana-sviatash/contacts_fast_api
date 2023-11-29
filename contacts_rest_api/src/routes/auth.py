@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from src.database.db import get_db
 from src.schemas import UserBase, UserResponse, TokenModel, RequestEmail
-from src. repository import users as repository_users
+from src.repository import users as repository_users
 from src.services.auth import auth_service
 from src.services.email import send_email
 
