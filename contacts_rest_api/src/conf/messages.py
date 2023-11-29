@@ -1,3 +1,3 @@
-EMAIL_NOT_CONFIRMED = "Email not confirmed!"
+EMAIL_NOT_CONFIRMED = "Not confirmed email"
 
 # EM = { "uk": "Привіт", "en": "Hello" }

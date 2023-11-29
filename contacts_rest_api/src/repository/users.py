@@ -31,7 +31,12 @@ async def create_user(body: UserBase, db: Session):
     """
     g = Gravatar(body.email)
 
-    new_user = User(**body, avatar=g.get_image())
+    new_user = User(
+        username=body.username,
+        email=body.email,
+        password=body.password,
+        avatar=g.get_image(),
+    )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
